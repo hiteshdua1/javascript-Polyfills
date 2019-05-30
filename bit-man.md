@@ -1,29 +1,32 @@
-A summary: how to use bit manipulation to solve problems easily and efficiently
+> A summary: how to use bit manipulation to solve problems easily and efficiently
 
-Wiki
+### Wiki
 Bit manipulation is the act of algorithmically manipulating bits or other pieces of data shorter than a word. Computer programming tasks that require bit manipulation include low-level device control, error detection and correction algorithms, data compression, encryption algorithms, and optimization. For most other tasks, modern programming languages allow the programmer to work directly with abstractions instead of bits that represent those abstractions. Source code that does bit manipulation makes use of the bitwise operations: AND, OR, XOR, NOT, and bit shifts.
 
-Bit manipulation, in some cases, can obviate or reduce the need to loop over a data structure and can give many-fold speed ups, as bit manipulations are processed in parallel, but the code can become more difficult to write and maintain.
+**Bit manipulation**, in some cases, can obviate or reduce the need to loop over a data structure and can give many-fold speed ups, as bit manipulations are processed in parallel, but the code can become more difficult to write and maintain.
 
-Details
-Basics
-At the heart of bit manipulation are the bit-wise operators & (and), | (or), ~ (not) and ^ (exclusive-or, xor) and shift operators a << b and a >> b.
+### Details
+#### Basics
+At the heart of bit manipulation are the bit-wise operators `&` (and), `|` (or), `~` (not) and `^` (exclusive-or, xor) and shift operators `a << b` and `a >> b`.
 
-There is no boolean operator counterpart to bitwise exclusive-or, but there is a simple explanation. The exclusive-or operation takes two inputs and returns a 1 if either one or the other of the inputs is a 1, but not if both are. That is, if both inputs are 1 or both inputs are 0, it returns 0. Bitwise exclusive-or, with the operator of a caret, ^, performs the exclusive-or operation on each pair of bits. Exclusive-or is commonly abbreviated XOR.
+There is **no** boolean operator counterpart to bitwise _exclusive-or_, but there is a simple explanation. 
 
-Set union A | B
-Set intersection A & B
-Set subtraction A & ~B
-Set negation ALL_BITS ^ A or ~A
-Set bit A |= 1 << bit
-Clear bit A &= ~(1 << bit)
-Test bit (A & 1 << bit) != 0
-Extract last bit A&-A or A&~(A-1) or x^(x&(x-1))
-Remove last bit A&(A-1)
-Get all 1-bits ~0
-Examples
-Count the number of ones in the binary representation of the given number
+The exclusive-or operation takes two inputs and returns a 1 if either one or the other of the inputs is a 1, but not if both are. That is, if both inputs are 1 or both inputs are 0, it returns 0. Bitwise exclusive-or, with the operator of a caret, `^`, performs the exclusive-or operation on each pair of bits. Exclusive-or is commonly abbreviated `XOR`.
 
+- Set union A | B
+- Set intersection A & B
+- Set subtraction A & ~B
+- Set negation ALL_BITS ^ A or ~A
+- Set bit A |= 1 << bit
+- Clear bit A &= ~(1 << bit)
+- Test bit (A & 1 << bit) != 0
+- Extract last bit A&-A or A&~(A-1) or x^(x&(x-1))
+- Remove last bit A&(A-1)
+- Get all 1-bits ~0
+- Examples
+- Count the number of ones in the binary representation of the given number
+
+```
 int count_one(int n) {
     while(n) {
         n = n&(n-1);
@@ -31,24 +34,31 @@ int count_one(int n) {
     }
     return count;
 }
+```
 Is power of four (actually map-checking, iterative and recursive methods can do the same)
 
+```
 bool isPowerOfFour(int n) {
     return !(n&(n-1)) && (n&0x55555555);
     //check the 1-bit location;
 }
-^ tricks
+```
+### `^` tricks
 Use ^ to remove even exactly same numbers and save the odd, or save the distinct bits and remove the same.
 
-Sum of Two Integers
-Use ^ and & to add two integers
+#### Sum of Two Integers
+Use `^` and `&` to add two integers
 
+```
 int getSum(int a, int b) {
     return b==0? a:getSum(a^b, (a&b)<<1); //be careful about the terminating condition;
 }
-Missing Number
+```
+
+#### Missing Number
 Given an array containing n distinct numbers taken from 0, 1, 2, ..., n, find the one that is missing from the array. For example, Given nums = [0, 1, 3] return 2. (Of course, you can do this by math.)
 
+```
 int missingNumber(vector<int>& nums) {
     int ret = 0;
     for(int i = 0; i < nums.size(); ++i) {
@@ -57,11 +67,14 @@ int missingNumber(vector<int>& nums) {
     }
     return ret^=nums.size();
 }
-| tricks
+```
+
+### `|` tricks
 Keep as many 1-bits as possible
 
-Find the largest power of 2 (most significant bit in binary form), which is less than or equal to the given number N.
+#### Find the largest power of 2 (most significant bit in binary form), which is less than or equal to the given number N.
 
+```
 long largest_power(long N) {
     //changing all right side bits to 1.
     N = N | (N>>1);
@@ -71,10 +84,13 @@ long largest_power(long N) {
     N = N | (N>>16);
     return (N+1)>>1;
 }
-Reverse Bits
-Reverse bits of a given 32 bits unsigned integer.
+```
+
+#### Reverse Bits
+> Reverse bits of a given 32 bits unsigned integer.
 
 Solution
+```
 uint32_t reverseBits(uint32_t n) {
     unsigned int mask = 1<<31, res = 0;
     for(int i = 0; i < 32; ++i) {
@@ -84,6 +100,9 @@ uint32_t reverseBits(uint32_t n) {
     }
     return res;
 }
+```
+
+```
 uint32_t reverseBits(uint32_t n) {
 	uint32_t mask = 1, ret = 0;
 	for(int i = 0; i < 32; ++i){
@@ -93,20 +112,26 @@ uint32_t reverseBits(uint32_t n) {
 	}
 	return ret;
 }
-& tricks
+```
+
+### `&` tricks
 Just selecting certain bits
 
-Reversing the bits in integer
+#### Reversing the bits in integer
 
+```
 x = ((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1);
 x = ((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2);
 x = ((x & 0xf0f0f0f0) >> 4) | ((x & 0x0f0f0f0f) << 4);
 x = ((x & 0xff00ff00) >> 8) | ((x & 0x00ff00ff) << 8);
 x = ((x & 0xffff0000) >> 16) | ((x & 0x0000ffff) << 16);
-Bitwise AND of Numbers Range
-Given a range [m, n] where 0 <= m <= n <= 2147483647, return the bitwise AND of all numbers in this range, inclusive. For example, given the range [5, 7], you should return 4.
+```
+
+#### Bitwise AND of Numbers Range
+> Given a range [m, n] where 0 <= m <= n <= 2147483647, return the bitwise AND of all numbers in this range, inclusive. For example, given the range [5, 7], you should return 4.
 
 Solution
+```
 int rangeBitwiseAnd(int m, int n) {
     int a = 0;
     while(m != n) {
@@ -116,6 +141,7 @@ int rangeBitwiseAnd(int m, int n) {
     }
     return m<<a; 
 }
+```
 Number of 1 Bits
 Write a function that takes an unsigned integer and returns the number of ’1' bits it has (also known as the Hamming weight).
 
